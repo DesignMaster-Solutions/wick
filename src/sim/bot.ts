@@ -5,7 +5,7 @@ import type { Obstacle } from './pages.ts';
 import { addHandShadow, magnification, newShadowSet, STRIDE } from './shadow.ts';
 import { canStandAhead, groundAt, STEP_UP, WICK_H, WICK_HALF, type World } from './world.ts';
 
-export type HandTarget = { pose: string; wrist: Vec3; q: Quat };
+export type HandTarget = { pose: string; wrist: Vec3; q: Quat; tip?: boolean };
 
 /** Fingers along angle a in the paper plane, back of the hand toward the viewer (s=1) or the paper (s=-1). */
 export const handQuat = (a: number, s: 1 | -1 = 1): Quat => {

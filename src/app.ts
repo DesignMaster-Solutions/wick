@@ -108,6 +108,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
   let litK = 0;
   let stepClock = 0;
   let tabCooldown = 0;
+  let tabLatch = false;
   let bothPinch = 0;
   let frames = 0, fpsClock = 0, fps = 0, statClock = 0;
   let duck = 1;
@@ -248,13 +249,15 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
 
     const w = game.world;
     tabCooldown = Math.max(0, tabCooldown - dt);
-    if (tabCooldown === 0 && game.phase !== 'dark' && game.phase !== 'turn') {
-      for (const h of local) {
-        if (!h) continue;
-        const tip = TABS.findIndex((x) => Math.hypot(h.p[27] - x, h.p[28] - TAB_Y) < 0.026 && h.p[29] > -0.03 && h.p[29] < 0.05);
-        if (tip >= 0) { tabPress(tip); tabCooldown = 0.9; break; }
-      }
+    // A press needs the fingertip to leave and come back: resting on a tab must not flicker it.
+    let touching = -1;
+    for (const h of local) {
+      if (!h) continue;
+      const tip = TABS.findIndex((x) => Math.hypot(h.p[27] - x, h.p[28] - TAB_Y) < 0.026 && h.p[29] > -0.03 && h.p[29] < 0.05);
+      if (tip >= 0) touching = tip;
     }
+    if (touching < 0) tabLatch = false;
+    else if (!tabLatch && tabCooldown === 0 && game.phase !== 'dark' && game.phase !== 'turn') { tabLatch = true; tabPress(touching); tabCooldown = 0.5; }
 
     // Lighting of the moment.
     litK += ((game.phase === 'dark' ? 0 : 1) - litK) * Math.min(1, dt * 2.4);

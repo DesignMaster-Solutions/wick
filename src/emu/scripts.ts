@@ -3,9 +3,12 @@ import type { Game } from '../sim/game.ts';
 import type { Vec3 } from '../sim/hand.ts';
 import { PAGES } from '../sim/pages.ts';
 
-export type HandCue = { pose: string; at: Vec3; a?: number };
+// tip: `at` is where the index fingertip goes (poking), instead of the wrist.
+export type HandCue = { pose: string; at: Vec3; a?: number; tip?: boolean };
 export type Cue = { from: number; to: number; right?: HandCue | 'bot'; left?: HandCue; head?: number };
 
+const pokeAlbum: HandCue = { pose: 'point', at: [0.09, -0.275, 0.012], a: 1.57, tip: true };
+const pokeInk: HandCue = { pose: 'point', at: [-0.09, -0.275, 0.012], a: 1.57, tip: true };
 const pinch: HandCue = { pose: 'bird', at: [0.0, -0.1, 0.16], a: 1.2 };
 const raised: HandCue = { pose: 'open', at: [0.0, -0.13, 0.16], a: 1.4 };
 
@@ -32,8 +35,9 @@ export const script = (demo: string): Cue[] => {
     case 'tabs':
       return [
         ...start,
-        { from: 3.5, to: 4.5, right: { pose: 'flat', at: [-0.09, -0.34, 0.01], a: 1.57 } },
-        { from: 6, to: 7, right: { pose: 'flat', at: [0.09, -0.34, 0.01], a: 1.57 } },
+        { from: 4, to: 8, right: pokeInk },
+        { from: 12, to: 16, right: pokeAlbum },
+        { from: 16, to: 1e9 },
       ];
     case 'look':
       return [...start, { from: 3.2, to: 5 }, { from: 5, to: 7, head: 1.4 }, { from: 7, to: 1e9 }];
@@ -43,8 +47,6 @@ export const script = (demo: string): Cue[] => {
 };
 
 // The film's one continuous take: every page played by the solver, then album, ink mode, and today's page.
-const pokeAlbum: HandCue = { pose: 'flat', at: [0.09, -0.34, 0.01], a: 1.57 };
-const pokeInk: HandCue = { pose: 'flat', at: [-0.09, -0.34, 0.01], a: 1.57 };
 let dailyAt = -1;
 export const filmStep = (g: Game, clock: number): HandCue | 'bot' | null => {
   if (clock < 1.2) return null;

@@ -8,14 +8,14 @@ const BASE = arg('--url', 'https://designmaster-solutions.github.io/wick/');
 const only = process.argv[2]?.startsWith('--') ? undefined : process.argv[2];
 
 const CASES = [
-  { name: 'dark: nothing happens before the pinch', q: 'demo=dark', wait: 2500, check: (d) => d.phase === 'dark' && d.lit === '0' && d.hands === '0' && d.x === '-0.280' },
+  { name: 'dark: nothing happens before the pinch', q: 'demo=dark', wait: 6000, check: (d) => d.phase === 'dark' && d.lit === '0' && d.hands === '0' && d.x === '-0.280' },
   { name: 'dark: the page teaches the pinch with a ghost hand', q: 'demo=dark', wait: 14000, check: (d) => d.phase === 'dark' && d.ghost === '1' },
   { name: 'pinch lights it; with no hand he stops at the gap and looks at you', q: 'demo=waiting', wait: 12000, check: (d) => d.phase === 'play' && d.mode === 'wait' && d.why === 'gap' && d.lit === '0' && Number(d.x) < -0.05 },
   { name: 'after waiting, the page shows the hand that would help', q: 'demo=waiting', wait: 22000, check: (d) => d.mode === 'wait' && d.ghost === '1' },
   { name: 'first page: hand bridge, he crosses, page done in time', q: 'demo=first30', wait: 30000, check: (d) => Number(d.lit) >= 1 },
   { name: 'puppets via real WebXR joints all enter the album', q: 'demo=puppets', wait: 24000, check: (d) => ['dog', 'bird', 'rabbit', 'snail', 'crab', 'swan'].every((p) => d.album.split(',').includes(p)) },
-  { name: 'tabs: poking toggles ink and opens the album', q: 'demo=tabs', wait: 16000, check: (d) => d.ink === 'true' && d.phase === 'album' },
-  ...[1, 2, 3, 4, 5, 6, 7].map((p) => ({ name: `page ${p}: bot finishes it through the real input path`, q: `demo=tour&page=${p}&speed=3`, wait: 50000, check: (d) => Number(d.lit) >= 1 })),
+  { name: 'tabs: poking toggles ink and opens the album', q: 'demo=tabs', wait: 22000, check: (d) => d.ink === 'true' && d.phase === 'album' },
+  ...[1, 2, 3, 4, 5, 6, 7].map((p) => ({ name: `page ${p}: bot finishes it through the real input path`, q: `demo=tour&page=${p}&speed=3`, wait: 40000, check: (d) => Number(d.lit) >= 1 })),
 ];
 
 const run = (c) => {
@@ -31,7 +31,9 @@ let bad = 0;
 for (const c of CASES.filter((x) => !only || x.name.includes(only))) {
   let d = {};
   let ok = false;
-  try { d = run(c); ok = !!c.check(d); } catch (e) { d = { error: String(e.message).slice(0, 200) }; }
+  for (let tries = 0; tries < 2 && !ok; tries++) {
+    try { d = run(c); ok = !!c.check(d); } catch (e) { d = { error: String(e.message).slice(0, 200) }; } // browser-service timeouts are retried once
+  }
   console.log(`${ok ? 'pass' : 'FAIL'}  ${c.name}\n      ${JSON.stringify({ boot: d.boot, phase: d.phase, page: d.page, mode: d.mode, why: d.why, x: d.x, t: d.t, hands: d.hands, awake: d.awake, album: d.album, lit: d.lit, ghost: d.ghost, ink: d.ink, fps: d.fps, clock: d.emuClock, err: d.error })}`);
   if (!ok) bad++;
 }

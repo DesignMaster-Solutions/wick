@@ -17,7 +17,14 @@ const boot = async () => {
     const app = await startApp($('xr'), emu, params);
     app.world.launchXR();
     document.body.dataset.boot = 'emu';
-    if (clock) (window as unknown as { __wickFilm: unknown }).__wickFilm = { clock, canvas: app.world.renderer.domElement };
+    if (clock) {
+      const wait = setInterval(() => {
+        if (!app.world.session) return;
+        clearInterval(wait);
+        clock.start();
+        (window as unknown as { __wickFilm: unknown }).__wickFilm = { clock, canvas: app.world.renderer.domElement };
+      }, 30);
+    }
     return;
   }
   attract($('attract') as HTMLCanvasElement);

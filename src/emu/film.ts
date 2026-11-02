@@ -13,17 +13,22 @@ export const installVirtualClock = () => {
   performance.now = () => (fromGame() ? now : realNow());
   let seed = 424242;
   Math.random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const frame = () => {
+    now += 1000 / 30;
+    const run = queue;
+    queue = [];
+    handles.clear();
+    for (const cb of run) cb(now);
+  };
+  // World setup awaits frames, and film time cannot start before it finishes: tick on a real timer until then.
+  const boot = setInterval(frame, 15);
+  let base = 0;
   return {
+    start() { clearInterval(boot); base = now; },
     /** Advances virtual time to t seconds, one 1/30 s frame at a time. */
     pumpTo(t: number) {
-      while (now / 1000 < t - 1e-6) {
-        now += 1000 / 30;
-        const run = queue;
-        queue = [];
-        handles.clear();
-        for (const cb of run) cb(now);
-      }
+      while ((now - base) / 1000 < t - 1e-6) frame();
     },
-    get seconds() { return now / 1000; },
+    get seconds() { return (now - base) / 1000; },
   };
 };

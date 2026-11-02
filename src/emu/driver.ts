@@ -51,7 +51,7 @@ export const installEmu = (demo: string, film = false): EmuDriver => {
     paper.getWorldQuaternion(pq);
     q.set(t.q[0], t.q[1], t.q[2], t.q[3]).premultiply(pq);
     const at = pos[side]!;
-    hand.setPin({ anchor: 'wrist', target: [at.x, at.y, at.z], wristRotation: [q.x, q.y, q.z, q.w] });
+    hand.setPin({ anchor: t.tip ? 'index-tip' : 'wrist', target: [at.x, at.y, at.z], wristRotation: [q.x, q.y, q.z, q.w] });
   };
 
   return {
@@ -71,12 +71,12 @@ export const installEmu = (demo: string, film = false): EmuDriver => {
         const cy = Math.cos(yaw / 2), sy = Math.sin(yaw / 2), cp = Math.cos(pitch / 2), sp = Math.sin(pitch / 2);
         device.quaternion.set(sp * cy, cp * sy, -sp * sy, cp * cy);
         if (f === 'bot') hold.right = game.phase === 'play' ? bot.intent(game.world) : null;
-        else if (f) hold.right = { pose: f.pose, wrist: f.at, q: handQuat(f.a ?? 0) };
+        else if (f) hold.right = { pose: f.pose, wrist: f.at, q: handQuat(f.a ?? 0), tip: f.tip };
       } else if (cue) {
         if (cue.head !== undefined) device.quaternion.set(0, Math.sin(cue.head / 2), 0, Math.cos(cue.head / 2));
         else device.quaternion.set(0, 0, 0, 1);
         if (cue.right === 'bot') hold.right = game.phase === 'play' ? bot.intent(game.world) : null;
-        else if (cue.right) hold.right = { pose: cue.right.pose, wrist: cue.right.at, q: handQuat(cue.right.a ?? 0) };
+        else if (cue.right) hold.right = { pose: cue.right.pose, wrist: cue.right.at, q: handQuat(cue.right.a ?? 0), tip: cue.right.tip };
         if (cue.left) hold.left = { pose: cue.left.pose, wrist: cue.left.at, q: handQuat(cue.left.a ?? 0) };
       }
       pin('right', hold.right, paper, dt);
