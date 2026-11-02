@@ -12,7 +12,7 @@ Track: Gaming. Division: New Experience (conceived and built from scratch after 
 ## Links
 - Play: https://designmaster-solutions.github.io/wick/
 - Source: https://github.com/DesignMaster-Solutions/wick
-- Video: VIDEO_URL_HERE (not uploaded yet: MP4 at ~/Backups/impressora/meta-vr-start/video/wick.mp4, also at https://designmaster-solutions.github.io/wick/wick.mp4)
+- Video: https://youtu.be/ZQAuG4g5L9g (not uploaded yet: MP4 at ~/Backups/impressora/meta-vr-start/video/wick.mp4, also at https://designmaster-solutions.github.io/wick/wick.mp4)
 
 ## Description (max 500 words)
 You sit down and put on the headset. A sheet of rice paper stands in front of you. You pinch, the room dims, and a flame catches at your chest. Now your real hands are between a light and a page, and their shadow falls on it.

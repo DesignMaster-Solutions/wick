@@ -6,6 +6,8 @@ A hands-first mixed reality game for Meta Quest, built with the Immersive Web SD
 
 Play: https://designmaster-solutions.github.io/wick/ (Quest Browser, Quest 3 or 3S, no controllers).
 
+Demo video (2:12, emulator footage): https://youtu.be/ZQAuG4g5L9g
+
 Film (2:12, emulator footage): https://designmaster-solutions.github.io/wick/wick.mp4
 
 ## How it plays
