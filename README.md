@@ -6,6 +6,8 @@ A hands-first mixed reality game for Meta Quest, built with the Immersive Web SD
 
 Play: https://designmaster-solutions.github.io/wick/ (Quest Browser, Quest 3 or 3S, no controllers).
 
+Film (2:12, emulator footage): https://designmaster-solutions.github.io/wick/wick.mp4
+
 ## How it plays
 
 - Pinch and the flame catches; the room dims.
@@ -49,6 +51,8 @@ node scripts/e2e.mjs           # deployed page + IWER emulator + synthetic hands
 ## Build and deploy
 
 Node 20.19 or newer. `npm ci --ignore-scripts && npm run dev`. Pushing to `main` tests, builds and publishes to GitHub Pages.
+
+The film is rendered from the real game through the emulator, frame by frame: `video/build-film.sh <seconds>`, `node video/record.mjs video/out/events.jsonl`, `npx hyperframes render video/film`, then `python3 video/finish.py <seconds>` for captions and the synthesized soundtrack.
 
 `package.json` replaces `playwright` with an empty package: it is only an unused transitive dependency of a UIKit renderer CLI inside the IWSDK. Nothing here drives a browser with it.
 
