@@ -76,6 +76,6 @@ test('filter calms tremor and keeps up with a real move', () => {
   g.apply(raw, 1 / 72);
   raw[0] = 0.2;
   let v = 0;
-  for (let i = 0; i < 12; i++) v = g.apply(raw, 1 / 72)[0];
-  assert.ok(v > 0.17, `lagged at ${v}`);
+  for (let i = 0; i < 5; i++) v = g.apply(raw, 1 / 72)[0];
+  assert.ok(v > 0.15, `lagged at ${v}`);
 });

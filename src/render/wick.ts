@@ -44,7 +44,8 @@ export class WickFigure {
           gl_FragColor = vec4(c * (f + glow), f * .95 + glow * .2);
         }`,
     }));
-    this.flame.position.set(0, -H * 0.1, 0.002);
+    this.flame.position.set(0, -H * 0.34, 0.002);
+    this.flame.rotation.z = -2.3; // stays upright while the arm holds it out
     this.flame.renderOrder = 6;
     this.armFlame.add(this.flame);
     // Flame hand held out and up: he is carrying it for you.

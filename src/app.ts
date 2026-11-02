@@ -75,7 +75,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
     const table = new Mesh(new PlaneGeometry(1.6, 0.8), new ShaderMaterial({ vertexShader: 'varying vec2 vU; void main(){ vU=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}', fragmentShader: 'varying vec2 vU; void main(){ gl_FragColor=vec4(mix(vec3(.3,.19,.11),vec3(.2,.12,.07),sin(vU.y*90.)*.5+.5),1.);}' }));
     table.rotation.x = -Math.PI / 2;
     paper.add(table);
-    table.position.set(0, BOTTOM - 0.02 - 0.02, 0.2);
+    table.position.set(0, BOTTOM - 0.1, 0.2);
   }
 
   // Tabs on the bottom of the frame, pressed by poking: ink mode, steady hand, album.
