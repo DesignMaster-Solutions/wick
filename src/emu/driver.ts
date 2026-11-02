@@ -24,7 +24,7 @@ export const installEmu = (demo: string, film = false): EmuDriver => {
   for (const [name, def] of Object.entries(POSE_ANGLES)) {
     if (def.angles) config.poses[name] = buildHandPose(def.angles as never, relaxedHandPose, pinchHandPose);
   }
-  const device = new XRDevice(metaQuest3, { stereoEnabled: false, fovy: film ? 1.02 : 1.15 });
+  const device = new XRDevice(metaQuest3, { stereoEnabled: false, fovy: film ? 0.84 : 1.15 });
   device.installRuntime({ forceInstall: true });
   device.primaryInputMode = 'hand';
   device.position.set(0, 1.28, 0);
@@ -65,6 +65,8 @@ export const installEmu = (demo: string, film = false): EmuDriver => {
       hold.right = null;
       if (film) {
         const f = filmStep(game, clock);
+        // The film skips two pages to stay under three minutes; they are in the game and in the tests.
+        if (game.phase === 'turn' && game.turnT > 1.2 && (game.save.page === 1 || game.save.page === 6)) game.save.page++;
         // A seated person: small slow head movement, which is what shows the stereo layers of the page.
         const yaw = Math.sin(clock * 0.21) * 0.035, pitch = -0.17 + Math.sin(clock * 0.13) * 0.012;
         device.position.set(Math.sin(clock * 0.27) * 0.035, 1.3, 0.13);

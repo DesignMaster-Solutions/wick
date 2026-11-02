@@ -121,6 +121,15 @@ export class Bot {
       this.engaged = o.i;
     }
     if (o.kind === 'chasm' && this.opt.chasm !== 'snail' && w.x < o.x0 - 0.04) return null; // a raised bird would wall him off
+    if (o.kind === 'wall' && w.mode === 'wait') {
+      // He is already at the foot of the wall: slide a flat hand under him and lift him, slowly, up to the top.
+      const z = 0.16, t = magnification(w.light[2], z);
+      const c: HandTarget = { pose: 'flat', q: handQuat(0), wrist: [w.light[0], w.light[1], z] };
+      const b = bounds(shadowOf(w, c, this.handed));
+      const top = Math.min(o.y1 + 0.006, w.y + 0.016);
+      c.wrist = [c.wrist[0] + (w.x + 0.03 - (b.minX + b.maxX) / 2) / t, c.wrist[1] + (top - b.maxY) / t, z];
+      return c;
+    }
     if (o.kind === 'gap' || o.kind === 'wall') {
       if (!this.roads.has(o.i)) this.roads.set(o.i, planRoad(w, o, this.handed));
       return this.roads.get(o.i) ?? null;

@@ -13,12 +13,15 @@ html,body{margin:0;background:#000;width:1920px;height:1080px;overflow:hidden}
 <script>
   const view = document.getElementById('view').getContext('2d');
   const ready = new Promise((res) => { const i = setInterval(() => { if (window.__wickFilm) { clearInterval(i); res(window.__wickFilm); } }, 50); });
-  let shownAt = -1;
+  // The host probes a few spread-out times first, and may reopen the page. The game only moves forward,
+  // so it starts on the first frame-to-frame step; replaying from 0 is deterministic, so a reopen is safe.
+  let armed = false, last = -1, shownAt = -1;
   window.addEventListener('hf-seek', (e) => {
     const t = e.detail.time;
     e.detail.waitUntil(ready.then(async (f) => {
       const rt = document.querySelector('[data-webxr_runtime]');
       if (rt) rt.style.opacity = 0;
+      if (!armed) { if (t > last && t - last < 0.04) armed = true; last = t; if (!armed) return; }
       if (t > shownAt) { f.clock.pumpTo(t); shownAt = t; view.drawImage(f.canvas, 0, 0, 1920, 1080); }
     }));
   });

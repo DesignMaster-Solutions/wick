@@ -18,7 +18,7 @@ export class Flame {
           vec2 p = vec2((vU.x - 0.5) * 2.0, vU.y);
           float sway = sin(uT * 7.0 + p.y * 5.0) * 0.07 * p.y + sin(uT * 13.0 + p.y * 9.0) * 0.035 * p.y;
           p.x += sway;
-          float w = 0.46 * pow(1.0 - p.y, 0.8) * smoothstep(0.0, 0.2, p.y + 0.02) * (1.0 + 0.5 * sin(p.y * 2.4));
+          float w = 0.8 * pow(1.0 - p.y, 0.8) * smoothstep(0.0, 0.2, p.y + 0.02) * (1.0 + 0.5 * sin(p.y * 2.4));
           float f = 1.0 - smoothstep(w * 0.2, w, abs(p.x));
           f *= uK;
           vec3 c = mix(vec3(1.0, 0.33, 0.05), vec3(1.0, 0.86, 0.48), smoothstep(0.1, 0.9, f));

@@ -44,6 +44,13 @@ for (const page of PAGES) {
   }
 }
 
+test('a player who only reacts after he stops can still finish every page', () => {
+  for (const p of PAGES) {
+    const { w, seen } = play(p, { patience: 1.7 }, 100);
+    assert.ok(w.done, `${p.id} stuck x=${w.x.toFixed(3)} y=${w.y.toFixed(3)} why=${w.why} ${seen.join(' ')}`);
+  }
+});
+
 test('first page: payoff arrives before 30 s of play', () => {
   const { w } = play(PAGES[0]);
   assert.ok(w.time < 30, `took ${w.time}`);
