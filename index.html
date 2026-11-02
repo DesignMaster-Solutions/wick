@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WICK: your hands cast the only road he has</title>
+<meta name="description" content="A hands-first mixed reality game for Meta Quest. Your real hands cast shadows on a sheet of paper, and a tiny paper figure walks on them. No controllers, no words.">
+<link rel="canonical" href="https://designmaster-solutions.github.io/wick/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23140b07'/%3E%3Cpath d='M16 4c5 7 8 11 8 16a8 8 0 0 1-16 0c0-5 3-9 8-16z' fill='%23ff9a2e'/%3E%3C/svg%3E">
+<meta property="og:title" content="WICK"><meta property="og:description" content="Your hands cast the only road he has."><meta property="og:type" content="website">
+<style>
+  :root { --ink:#160c08; --paper:#efdfbf; --ember:#ff8a2a; --verm:#c8391f; }
+  * { box-sizing:border-box; margin:0 }
+  html, body { background:var(--ink); color:var(--paper); font-family: ui-serif, 'Iowan Old Style', Palatino, Georgia, serif; min-height:100% }
+  body.emu main, body.emu footer { display:none }
+  #xr { position:fixed; inset:0; z-index:-1 }
+  body.emu #xr { z-index:1 }
+  main { max-width:1060px; margin:0 auto; padding:clamp(20px,5vw,56px) clamp(16px,4vw,32px) 20px; display:grid; gap:clamp(20px,3vw,36px) }
+  h1 { font-size:clamp(64px,15vw,170px); line-height:.86; letter-spacing:.02em; font-weight:400; color:var(--paper); }
+  h1 i { color:var(--ember); font-style:normal; text-shadow:0 0 34px #ff8a2a99 }
+  .tag { font-size:clamp(20px,3vw,32px); font-style:italic; opacity:.9 }
+  figure { border:clamp(6px,1.2vw,12px) solid #3b2a22; box-shadow:0 18px 70px #000c, 0 0 120px #ff8a2a2e; line-height:0 }
+  canvas#attract { width:100%; aspect-ratio:72/46; display:block; background:#a9845a }
+  .row { display:flex; gap:18px; align-items:center; flex-wrap:nowrap }
+  button { font:inherit; font-size:clamp(17px,2.2vw,22px); padding:.7em 1.2em; border:0; border-radius:3px; background:var(--ember); color:#1c0c04; cursor:pointer; white-space:nowrap }
+  button:disabled { background:#4a3528; color:#d9c6a3; cursor:default }
+  button:focus-visible, a:focus-visible { outline:3px solid var(--paper); outline-offset:3px }
+  a { color:var(--paper) }
+  .how { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2.4vw,28px); font-size:17px; line-height:1.45 }
+  .how b { display:block; color:var(--ember); font-weight:400; font-size:20px; margin-bottom:.2em }
+  footer { max-width:1060px; margin:0 auto; padding:18px 32px 40px; font-size:14px; opacity:.72 }
+  @media (max-width:420px){ .row a { font-size:15px } }
+</style>
+  <script type="module" crossorigin src="/wick/assets/index-Db2_QrTN.js"></script>
+</head>
+<body>
+<div id="xr"></div>
+<main>
+  <h1>W<i>i</i>ck</h1>
+  <p class="tag">Your hands cast the only road he has.</p>
+  <figure><canvas id="attract" role="img" aria-label="A paper figure walks across the shadow of a hand that bridges a gap in the ground."></canvas></figure>
+  <div class="row"><button id="enter" disabled>Checking for a headset…</button><a href="?emu=1&amp;demo=tour">Watch it in the emulator</a></div>
+  <section class="how">
+    <p><b>Sit down</b>Put the headset on, no controllers. A sheet of rice paper stands in front of you and a flame floats at your chest.</p>
+    <p><b>Pinch</b>The room dims and the flame catches. Your real hands now cast real shadows on the page.</p>
+    <p><b>Be his road</b>He stops at the gap and looks at you. Hand close to the paper, a small sharp shadow. Hand near the flame, a giant soft one.</p>
+    <p><b>Wake the puppets</b>Make the old shadow-theatre shapes. A dog, a bird, a rabbit, a snail, a crab, a swan. They open an eye and join in.</p>
+  </section>
+</main>
+<footer>Playable with one hand. No words, no timer, nobody dies. Meta Quest 3 or 3S in Quest Browser. <a href="https://github.com/DesignMaster-Solutions/wick">Source</a>. Website by <a href="https://www.designmastersolutions.com/?utm_source=designmaster-solutions.github.io&amp;utm_medium=referral&amp;utm_campaign=site-footer">Design Master Solutions</a>.</footer>
+</body>
+</html>
