@@ -8,18 +8,18 @@ const BASE = arg('--url', 'https://designmaster-solutions.github.io/wick/');
 const only = process.argv[2]?.startsWith('--') ? undefined : process.argv[2];
 
 const CASES = [
-  { name: 'dark: nothing happens before the pinch', q: 'demo=dark', wait: 7000, check: (d) => d.phase === 'dark' && d.lit === '0' && d.hands === '0' && d.x === '-0.280' },
-  { name: 'dark: the page teaches the pinch with a ghost hand', q: 'demo=dark', wait: 12000, check: (d) => d.phase === 'dark' && d.ghost === '1' },
-  { name: 'pinch lights it; with no hand he stops at the gap and looks at you', q: 'demo=waiting', wait: 16000, check: (d) => d.phase === 'play' && d.mode === 'wait' && d.why === 'gap' && d.lit === '0' && Number(d.x) < -0.05 },
-  { name: 'after waiting, the page shows the hand that would help', q: 'demo=waiting', wait: 30000, check: (d) => d.mode === 'wait' && d.ghost === '1' },
-  { name: 'first page: hand bridge, he crosses, page done in time', q: 'demo=first30', wait: 34000, check: (d) => Number(d.lit) >= 1 },
-  { name: 'puppets via real WebXR joints all enter the album', q: 'demo=puppets', wait: 34000, check: (d) => ['dog', 'bird', 'rabbit', 'snail', 'crab', 'swan'].every((p) => d.album.split(',').includes(p)) },
+  { name: 'dark: nothing happens before the pinch', q: 'demo=dark', wait: 2500, check: (d) => d.phase === 'dark' && d.lit === '0' && d.hands === '0' && d.x === '-0.280' },
+  { name: 'dark: the page teaches the pinch with a ghost hand', q: 'demo=dark', wait: 14000, check: (d) => d.phase === 'dark' && d.ghost === '1' },
+  { name: 'pinch lights it; with no hand he stops at the gap and looks at you', q: 'demo=waiting', wait: 12000, check: (d) => d.phase === 'play' && d.mode === 'wait' && d.why === 'gap' && d.lit === '0' && Number(d.x) < -0.05 },
+  { name: 'after waiting, the page shows the hand that would help', q: 'demo=waiting', wait: 22000, check: (d) => d.mode === 'wait' && d.ghost === '1' },
+  { name: 'first page: hand bridge, he crosses, page done in time', q: 'demo=first30', wait: 30000, check: (d) => Number(d.lit) >= 1 },
+  { name: 'puppets via real WebXR joints all enter the album', q: 'demo=puppets', wait: 24000, check: (d) => ['dog', 'bird', 'rabbit', 'snail', 'crab', 'swan'].every((p) => d.album.split(',').includes(p)) },
   { name: 'tabs: poking toggles ink and opens the album', q: 'demo=tabs', wait: 16000, check: (d) => d.ink === 'true' && d.phase === 'album' },
-  ...[1, 2, 3, 4, 5, 6, 7].map((p) => ({ name: `page ${p}: bot finishes it through the real input path`, q: `demo=tour&page=${p}&speed=3`, wait: 45000, check: (d) => Number(d.lit) >= 1 })),
+  ...[1, 2, 3, 4, 5, 6, 7].map((p) => ({ name: `page ${p}: bot finishes it through the real input path`, q: `demo=tour&page=${p}&speed=3`, wait: 50000, check: (d) => Number(d.lit) >= 1 })),
 ];
 
 const run = (c) => {
-  const url = `${BASE}?emu=1&${c.q}&v=${Date.now()}`;
+  const url = `${BASE}?emu=1&speed=5&${c.q.replace(/&speed=\d+/, '')}&v=${Date.now()}`;
   const html = execFileSync('browse', ['cf', 'html', url, '--wait', String(c.wait)], { encoding: 'utf8', timeout: 170000, maxBuffer: 2e7 });
   const tag = html.match(/<body([^>]*)>/)?.[1] ?? '';
   const d = {};

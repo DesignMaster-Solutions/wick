@@ -3,3 +3,6 @@ dist
 .DS_Store
 *.log
 /video/out
+video/film/game
+video/film/index.html
+video/film/renders

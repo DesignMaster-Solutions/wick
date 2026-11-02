@@ -86,7 +86,8 @@ export const placeAnchor = (w: World, pose: string, x: number, y: number, z: num
   return { pose, q, wrist: [w.light[0] + (x - w.light[0]) / t - ax, w.light[1] + (y - w.light[1]) / t - ay, z] };
 };
 
-export type BotOptions = { handed?: 1 | -1; chasm?: 'bird' | 'snail'; speed?: number; reach?: number };
+// patience: seconds he must stand and look at you before the hand comes (for filming; a person takes a moment).
+export type BotOptions = { handed?: 1 | -1; chasm?: 'bird' | 'snail'; speed?: number; reach?: number; patience?: number };
 
 export class Bot {
   roads = new Map<number, HandTarget | null>();
@@ -94,6 +95,7 @@ export class Bot {
   pose: string | null = null;
   goal: Vec3 | null = null;
   away = 0;
+  engaged = -1;
   out: Hand = newHand();
   handed: 1 | -1;
   opt: BotOptions;
@@ -114,6 +116,10 @@ export class Bot {
       return placeAnchor(w, pose, Math.min(w.x + 0.05, dest), destY, 0.16, 0.5, this.handed);
     }
     if (!o || w.x < o.x0 - (this.opt.reach ?? 0.16)) return null;
+    if (this.opt.patience) {
+      if (this.engaged !== o.i && (w.mode !== 'wait' || w.waited < this.opt.patience)) return null;
+      this.engaged = o.i;
+    }
     if (o.kind === 'chasm' && this.opt.chasm !== 'snail' && w.x < o.x0 - 0.04) return null; // a raised bird would wall him off
     if (o.kind === 'gap' || o.kind === 'wall') {
       if (!this.roads.has(o.i)) this.roads.set(o.i, planRoad(w, o, this.handed));

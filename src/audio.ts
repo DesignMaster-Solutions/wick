@@ -10,13 +10,21 @@ export class Sound {
   noise!: AudioBuffer;
   step = 0;
   rainGain: GainNode | null = null;
+  offset = 0; // offline rendering schedules events at their film time
+  nextNote = 3;
+  noteIndex = 0;
+  private get now() { return this.ctx!.currentTime + this.offset; }
 
   /** Must be called from a user gesture. */
   start() {
     if (this.ctx) { void this.ctx.resume(); return; }
     const Ctor = window.AudioContext;
     if (!Ctor) return;
-    const c = (this.ctx = new Ctor());
+    this.attach(new Ctor());
+  }
+
+  attach(c: BaseAudioContext) {
+    this.ctx = c as AudioContext;
     this.master = c.createGain();
     this.master.gain.value = 0.85;
     const comp = c.createDynamicsCompressor();
@@ -40,7 +48,7 @@ export class Sound {
   }
 
   private noiseBurst(dest: AudioNode, dur: number, freq: number, gain: number, type: BiquadFilterType = 'bandpass', q = 1.2, when = 0) {
-    const c = this.ctx!, t = c.currentTime + when;
+    const c = this.ctx!, t = this.now + when;
     const s = c.createBufferSource();
     s.buffer = this.noise;
     s.loop = true;
@@ -55,7 +63,7 @@ export class Sound {
   }
 
   private bell(semitone: number, gain = 0.14, when = 0, dest: AudioNode = this.wick) {
-    const c = this.ctx!, t = c.currentTime + when, f = 880 * Math.pow(2, semitone / 12);
+    const c = this.ctx!, t = this.now + when, f = 880 * Math.pow(2, semitone / 12);
     for (const [mult, g2, dur] of [[1, 1, 1.1], [3.93, 0.28, 0.32], [8.1, 0.09, 0.12]] as const) {
       const o = c.createOscillator();
       o.frequency.value = f * mult;
@@ -66,6 +74,15 @@ export class Sound {
       o.start(t);
       o.stop(t + dur + 0.02);
     }
+  }
+
+  /** A slow music box: a few notes every several seconds, never a loop you can count. */
+  ambient(time: number, lit: boolean) {
+    if (!this.ctx || !lit || time < this.nextNote) return;
+    const PHRASES = [[0, 4, 7, 9], [12, 9, 7], [4, 7, 12, 14, 12], [9, 7, 4, 2], [7, 9, 12, 16]];
+    const ph = PHRASES[this.noteIndex++ % PHRASES.length];
+    ph.forEach((n, i) => this.bell(n - 12, 0.05, i * (0.42 + (this.noteIndex % 3) * 0.08), this.rev));
+    this.nextNote = time + 7 + (this.noteIndex % 4) * 2.2;
   }
 
   crackle() {
@@ -122,7 +139,7 @@ export class Sound {
   }
 
   private voice(from: number, to: number, dur: number, type: OscillatorType, gain: number, when = 0) {
-    const c = this.ctx!, t = c.currentTime + when;
+    const c = this.ctx!, t = this.now + when;
     const o = c.createOscillator();
     o.type = type;
     o.frequency.setValueAtTime(from, t);

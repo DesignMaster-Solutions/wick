@@ -221,7 +221,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
     // IWSDK would draw a stand-in hand model; the player's real hands are the show.
     for (const h of Object.values(world.input.xr.visualAdapters.hand)) h.toggleVisual(false);
 
-    emu?.tick(game, paper, dt);
+    emu?.tick(game, paper, dt * speed); // speed only compresses the emulator's clock for slow software-GL test runs
     readHands(frame, ref, dt * speed);
 
     // Recentre: both hands pinched for a moment.
@@ -242,6 +242,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
     for (const e of game.events) {
       fx.event(e);
       sound.event(e.t, e.who);
+      emu?.log?.(e.t, e.who, e.x, e.y);
     }
     game.events.length = 0;
 
@@ -282,10 +283,11 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
     wick.update(w, dt, paper.worldToLocal(v.copy(head)).x, time);
     if (w.mode === 'walk' && !w.paused) {
       stepClock += dt;
-      if (stepClock > 0.29) { stepClock = 0; sound.event('step'); }
+      if (stepClock > 0.29) { stepClock = 0; sound.event('step'); emu?.log?.('step', undefined, w.x, w.y); }
     }
     fx.update(w, dt, time);
     sound.crackle();
+    sound.ambient(time, game.phase !== 'dark');
     v.set(w.x, w.y, 0.02).applyMatrix4(paper.matrixWorld);
     const raining = game.phase === 'play' && w.page.obstacles.some((o) => o.kind === 'rain' && !w.cleared.has(o.i));
     sound.place(v.x, v.y, v.z, { x: head.x, y: head.y, z: head.z, fx: fwd.x, fy: fwd.y, fz: fwd.z, ux: up.x, uy: up.y, uz: up.z }, raining, duck);
@@ -307,7 +309,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
         addHandShadow(tmpShadow, poseHand('bird', [-0.02, -0.05, 0.1], handQuat(1.2), 1, tmpHand), LIGHT);
         pass.write(tmpShadow, 1);
         ghost = 1;
-      } else if (game.phase === 'play' && w.mode === 'wait' && w.waited > HINT_AFTER && !local[0] && !local[1]) {
+      } else if (game.phase === 'play' && w.mode === 'wait' && w.waited > HINT_AFTER) {
         const it = hinter.intent(w);
         if (it) {
           tmpShadow.n = 0;

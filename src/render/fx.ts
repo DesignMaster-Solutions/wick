@@ -65,7 +65,7 @@ export class Fx {
   }
   event(e: GameEvent) {
     if (e.t === 'awake') { this.burst(e.x, e.y, 10, 0.12); this.ring(e.x, e.y); }
-    if (e.t === 'bark') { this.ring(e.x + 0.02, e.y); setTimeout(() => this.ring(e.x + 0.02, e.y), 130); }
+    if (e.t === 'bark') { this.ring(e.x + 0.02, e.y); this.ring(e.x + 0.02, e.y); this.rings[1].t = -0.13; }
     if (e.t === 'thump') { this.burst(e.x, e.y - 0.08, 22, 0.16); this.ring(e.x, e.y - 0.06); }
     if (e.t === 'snip') this.burst(e.x, e.y, 16, 0.1);
     if (e.t === 'crow-flees') this.burst(e.x, e.y + 0.04, 14, 0.2);
@@ -93,8 +93,8 @@ export class Fx {
       if (!r.on) { r.m.visible = false; continue; }
       r.t += dt;
       const k = r.t / 0.45;
-      r.m.visible = k < 1;
-      r.m.scale.setScalar(0.012 + k * 0.05);
+      r.m.visible = k > 0 && k < 1;
+      r.m.scale.setScalar(0.012 + Math.max(k, 0) * 0.05);
       if (k >= 1) r.on = false;
     }
     const m = new Matrix4(), q = new Quaternion(), v = new Vector3(), s = new Vector3(1, 1, 1), axis = new Vector3(0.4, 0.8, 0.3).normalize();

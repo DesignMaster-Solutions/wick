@@ -2,19 +2,22 @@
 import { attract } from './attract.ts';
 
 const params = new URLSearchParams(location.search);
-const emuDemo = params.get('emu') ? params.get('demo') ?? 'tour' : null;
+const filmHost = (window as unknown as { __WICK_FILM?: boolean }).__WICK_FILM === true;
+const emuDemo = filmHost ? 'film' : params.get('emu') ? params.get('demo') ?? 'tour' : null;
 const $ = (id: string) => document.getElementById(id)!;
 
 const boot = async () => {
   document.body.dataset.boot = 'starting';
   if (emuDemo) {
     document.body.classList.add('emu');
+    const clock = filmHost ? (await import('./emu/film.ts')).installVirtualClock() : null;
     const { installEmu } = await import('./emu/driver.ts');
-    const emu = installEmu(emuDemo);
+    const emu = installEmu(emuDemo, filmHost);
     const { startApp } = await import('./app.ts');
     const app = await startApp($('xr'), emu, params);
     app.world.launchXR();
     document.body.dataset.boot = 'emu';
+    if (clock) (window as unknown as { __wickFilm: unknown }).__wickFilm = { clock, canvas: app.world.renderer.domElement };
     return;
   }
   attract($('attract') as HTMLCanvasElement);
