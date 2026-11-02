@@ -31,7 +31,7 @@ export class WickFigure {
     this.armFlame = new Group();
     this.armFlame.position.set(bodyW * 0.72, H * 0.6, 0.002);
     this.armFlame.add(part(mat, (b) => b.poly([[-H * 0.04, 0], [H * 0.04, 0], [H * 0.03, -H * 0.28], [-H * 0.03, -H * 0.28]], VD, 0).disc(0, 0, H * 0.03, BRASS, 0.0003, 8)));
-    this.flame = new Mesh(new PlaneGeometry(H * 0.5, H * 0.75), new ShaderMaterial({
+    this.flame = new Mesh(new PlaneGeometry(H * 0.62, H * 0.62), new ShaderMaterial({
       transparent: true, depthWrite: false, blending: CustomBlending, blendSrc: OneFactor, blendDst: OneMinusSrcAlphaFactor, uniforms: this.flameUni,
       vertexShader: 'varying vec2 vU; void main(){ vU = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
       fragmentShader: /* glsl */ `

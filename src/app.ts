@@ -86,7 +86,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
   tabBatch.poly([[TABS[2] - 0.014, TAB_Y - 0.009], [TABS[2], TAB_Y - 0.005], [TABS[2], TAB_Y + 0.011], [TABS[2] - 0.014, TAB_Y + 0.008]], '#f4e7c8', 0.0126).poly([[TABS[2] + 0.014, TAB_Y - 0.009], [TABS[2], TAB_Y - 0.005], [TABS[2], TAB_Y + 0.011], [TABS[2] + 0.014, TAB_Y + 0.008]], '#3a2615', 0.0126);
   paper.add(tabBatch.build(mat));
 
-  const albumCover = new Batch().poly([[LEFT, BOTTOM], [-LEFT, BOTTOM], [-LEFT, SHEET_H / 2], [LEFT, SHEET_H / 2]], '#f0e2c4', 0.02).build(mat);
+  const albumCover = new Batch().poly([[LEFT, BOTTOM], [-LEFT, BOTTOM], [-LEFT, SHEET_H / 2], [LEFT, SHEET_H / 2]], '#f0e2c4', 0.009).build(mat);
   albumCover.visible = false;
   paper.add(albumCover);
   const albumEyes = new Group();
@@ -185,7 +185,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
       if (name === 'butterfly') { small('open', x - 0.03, 1); small('open', x + 0.03, -1); } else small(name, x, 1);
       pass.write(tmpShadow, found ? 0 : 1);
       if (found) {
-        const e = new Batch().disc(x + 0.012, y + 0.075, 0.009, '#f7e7c4', 0.0215, 12).disc(x + 0.012, y + 0.075, 0.0045, '#1a0f0a', 0.0218, 8).build(mat);
+        const e = new Batch().disc(x + 0.012, y + 0.075, 0.009, '#f7e7c4', 0.0125, 12).disc(x + 0.012, y + 0.075, 0.0045, '#1a0f0a', 0.0128, 8).build(mat);
         albumEyes.add(e);
       }
     });
@@ -299,6 +299,8 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
 
     // Shadow texture: real hands, then the hint, or the album on its own page.
     albumCover.visible = game.phase === 'album';
+    stage.root.visible = game.phase !== 'album';
+    if (game.phase === 'album') { wick.root.visible = false; fx.root.visible = false; }
     albumEyes.visible = game.phase === 'album';
     if (game.phase === 'album') {
       shared.uGhost.value = 1;

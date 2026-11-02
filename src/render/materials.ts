@@ -98,7 +98,7 @@ void main() {
   float ghost = s.g * hatch * uGhost * (0.5 + 0.2 * sin(uTime * 2.5));
   // Shadow lands on the page and ground only; Wick and the props stand in front of it and stay readable.
   float onPage = 1.0 - smoothstep(0.0095, 0.0115, vP.z);
-  float dark = max(s.r * 0.9, ghost * 0.6) * onPage;
+  float dark = max(s.r * 0.9, ghost * 0.85) * onPage;
   vec3 warm = mix(vec3(1.0), vec3(1.06, 0.93, 0.74), uLit);
   vec3 col = vColor * (0.74 + 0.52 * grain) * lit * warm;
   col = mix(col, vec3(0.055, 0.035, 0.03) * lit, dark);
