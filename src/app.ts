@@ -60,7 +60,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
   world.scene.add(handVis.mesh);
   const pass = new ShadowPass();
 
-  if (emu) {
+  if (emu && !params.has('noroom')) {
     // No camera feed in the emulator: a plain room stands in for passthrough so footage reads honestly as a room.
     const c = document.createElement('canvas');
     c.width = 32; c.height = 256;

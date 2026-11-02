@@ -42,3 +42,14 @@ Hands are the only input, from the first gesture to the last, with no controller
 - Gestures: a pinch lights the flame. Pinching both hands recentres the page. Poking the tabs on the frame toggles ink mode, steady mode and the album.
 - Puppets: a classifier uses ratios of joint distances, so it is independent of hand size and of which hand you use. It requires a stable pose for 0.3 s. We kept to poses that do not interlace fingers, because occlusion breaks tracking.
 - Everything can be done with one hand; the one two-hand puppet is optional.
+
+## YouTube (draft)
+Title: WICK: your hands cast the only road he has (hands-first mixed reality game, Meta Quest / WebXR)
+
+Description:
+WICK is a hands-first mixed reality game built with the Immersive Web SDK for the Meta VR Start Developer Competition 2026. Your real hands cast shadows on a sheet of paper, and a tiny paper figure walks on them. No controllers, no words.
+
+Footage is from the IWER emulator with scripted hands and a stand-in room, played through the game's real WebXR input path. It has not yet run on a physical headset.
+
+Play in Quest Browser: https://designmaster-solutions.github.io/wick/
+Source: https://github.com/DesignMaster-Solutions/wick
