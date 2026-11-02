@@ -73,7 +73,8 @@ export class Game {
       this.turnT += dt;
       if (this.turnT >= TURN_TIME) {
         this.world = newWorld(pageFor(this.save.page, this.day), LIGHT);
-        this.phase = 'play';
+        // Today's page is done: end on the album, not on a loop. Poking the album tab plays it again.
+        this.phase = this.isDaily && this.save.lastDay === this.day ? 'album' : 'play';
         this.events.push({ t: 'page-open', x: 0, y: 0 });
       }
       return;

@@ -106,7 +106,7 @@ void main() {
   if (uInk > 0.5) {
     float lum = dot(vColor, vec3(0.3, 0.6, 0.1));
     vec3 ink = lum > 0.62 ? vec3(1.0, 0.98, 0.9) : (vColor.r > vColor.g * 1.7 ? vec3(1.0, 0.35, 0.05) : vec3(0.1, 0.13, 0.42));
-    col = mix(ink, vec3(0.0), step(0.32, dark));
+    col = mix(ink, vec3(0.0), step(0.2, dark));
   }
   gl_FragColor = vec4(col, 1.0);
 }`;

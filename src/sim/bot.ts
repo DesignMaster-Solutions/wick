@@ -95,7 +95,7 @@ export class Bot {
   pose: string | null = null;
   goal: Vec3 | null = null;
   away = 0;
-  engaged = -1;
+  engaged = '';
   out: Hand = newHand();
   handed: 1 | -1;
   opt: BotOptions;
@@ -117,8 +117,9 @@ export class Bot {
     }
     if (!o || w.x < o.x0 - (this.opt.reach ?? 0.16)) return null;
     if (this.opt.patience) {
-      if (this.engaged !== o.i && (w.mode !== 'wait' || w.waited < this.opt.patience)) return null;
-      this.engaged = o.i;
+      const key = w.page.id + o.i;
+      if (this.engaged !== key && (w.mode !== 'wait' || w.waited < this.opt.patience)) return null;
+      this.engaged = key;
     }
     if (o.kind === 'chasm' && this.opt.chasm !== 'snail' && w.x < o.x0 - 0.04) return null; // a raised bird would wall him off
     if (o.kind === 'wall' && w.mode === 'wait') {

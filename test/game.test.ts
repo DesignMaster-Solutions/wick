@@ -61,6 +61,21 @@ test('after the last page the game is "today" and is seeded by the date', () => 
   assert.equal(g.world.page.id, 'day-20261118');
 });
 
+test("finishing today's page ends on the album and survives a replay", () => {
+  const g = new Game(memory(JSON.stringify({ page: PAGES.length })), new Date(Date.UTC(2026, 10, 18)));
+  g.phase = 'play';
+  const bot = new Bot();
+  let h = null;
+  while (g.phase === 'play' && g.time < 200) { g.step([null, h], DT); h = bot.update(g.world, DT); }
+  assert.equal(g.phase, 'turn');
+  assert.equal(g.save.lastDay, 20261118);
+  for (let i = 0; i < (TURN_TIME + 0.1) / DT; i++) g.step([null, null], DT);
+  assert.equal(g.phase, 'album');
+  g.toggleAlbum();
+  assert.equal(g.phase, 'play');
+  assert.equal(g.world.done, false);
+});
+
 test('filter calms tremor and keeps up with a real move', () => {
   const f = new JointFilter();
   const raw = new Float32Array(75);

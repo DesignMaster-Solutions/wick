@@ -24,7 +24,7 @@ export const installEmu = (demo: string, film = false): EmuDriver => {
   for (const [name, def] of Object.entries(POSE_ANGLES)) {
     if (def.angles) config.poses[name] = buildHandPose(def.angles as never, relaxedHandPose, pinchHandPose);
   }
-  const device = new XRDevice(metaQuest3, { stereoEnabled: false, fovy: film ? 0.84 : 1.15 });
+  const device = new XRDevice(metaQuest3, { stereoEnabled: false, fovy: film ? 0.75 : 1.15 });
   device.installRuntime({ forceInstall: true });
   device.primaryInputMode = 'hand';
   device.position.set(0, 1.28, 0);

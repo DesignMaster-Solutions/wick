@@ -198,6 +198,13 @@ export class Stage {
     this.root.add(c.build(this.mat));
   }
 
+  setProps(on: boolean) {
+    for (const p of this.popups) p.m.visible = on;
+    if (this.crow) this.crow.visible = on && this.crow.position.y < TOP + 0.02;
+    if (this.gate) this.gate.visible = on;
+    if (this.rain) this.rain.visible = on;
+  }
+
   update(w: World, dt: number, t: number) {
     for (const p of this.popups) {
       p.t += dt;

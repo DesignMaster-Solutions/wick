@@ -68,7 +68,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
     const grad = g.createLinearGradient(0, 0, 0, 256);
     grad.addColorStop(0, '#8d8f93'); grad.addColorStop(0.55, '#a39f98'); grad.addColorStop(0.56, '#4a3a2c'); grad.addColorStop(1, '#2b2118');
     g.fillStyle = grad; g.fillRect(0, 0, 32, 256);
-    const room = new Mesh(new BoxGeometry(6, 3, 6), new MeshBasicMaterial({ map: new CanvasTexture(c), side: BackSide }));
+    const room = new Mesh(new BoxGeometry(6, 3, 6), [0, 1, 2, 3, 4, 5].map((f) => (f === 3 ? new MeshBasicMaterial({ color: 0x1d1610, side: BackSide }) : f === 2 ? new MeshBasicMaterial({ color: 0x77777a, side: BackSide }) : new MeshBasicMaterial({ map: new CanvasTexture(c), side: BackSide }))));
     room.position.set(0, 1.5, 0);
     room.renderOrder = -100;
     world.scene.add(room);
@@ -299,7 +299,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
 
     // Shadow texture: real hands, then the hint, or the album on its own page.
     albumCover.visible = game.phase === 'album';
-    stage.root.visible = game.phase !== 'album';
+    stage.setProps(game.phase !== 'album'); // the frame stays, what stands on the page steps aside
     if (game.phase === 'album') { wick.root.visible = false; fx.root.visible = false; }
     albumEyes.visible = game.phase === 'album';
     if (game.phase === 'album') {
