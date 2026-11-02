@@ -5,9 +5,12 @@ export const installVirtualClock = () => {
   let queue: FrameRequestCallback[] = [];
   let handle = 0;
   const handles = new Map<number, FrameRequestCallback>();
-  globalThis.requestAnimationFrame = (cb) => { queue.push(cb); handles.set(++handle, cb); return handle; };
-  globalThis.cancelAnimationFrame = (h) => { const cb = handles.get(h); if (cb) queue = queue.filter((q) => q !== cb); handles.delete(h); };
-  performance.now = () => now;
+  // The renderer host needs real time for itself: only calls coming from the game bundle are virtual.
+  const fromGame = () => new Error().stack?.includes('/game/') ?? false;
+  const realRaf = globalThis.requestAnimationFrame.bind(globalThis), realCancel = globalThis.cancelAnimationFrame.bind(globalThis), realNow = performance.now.bind(performance);
+  globalThis.requestAnimationFrame = (cb) => { if (!fromGame()) return realRaf(cb); queue.push(cb); handles.set(++handle, cb); return -handle; };
+  globalThis.cancelAnimationFrame = (h) => { if (h >= 0) { realCancel(h); return; } const cb = handles.get(-h); if (cb) queue = queue.filter((q) => q !== cb); handles.delete(-h); };
+  performance.now = () => (fromGame() ? now : realNow());
   let seed = 424242;
   Math.random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   return {

@@ -90,13 +90,15 @@ void main() {
   float ndl = abs(dot(normalize(vN), toL)) / sqrt(d2);
   // A candle at the player's chest: bright at the middle of the page, falling away to the corners.
   float pool = 0.30 / (0.22 + d2);
-  float lit = mix(0.05, 0.22 + 1.05 * pool * (0.45 + 0.55 * ndl) * uFlicker, uLit);
+  float lit = mix(0.13, 0.22 + 1.05 * pool * (0.45 + 0.55 * ndl) * uFlicker, uLit);
   float grain = texture2D(uWashi, vP.xy * 2.6).r;
   vec2 uv = vP.xy / uSheet + 0.5;
   vec4 s = texture2D(uShadow, uv);
   float hatch = step(0.5, fract((vP.x + vP.y) * 90.0));
   float ghost = s.g * hatch * uGhost * (0.5 + 0.2 * sin(uTime * 2.5));
-  float dark = max(s.r * 0.9, ghost * 0.6);
+  // Shadow lands on the page and ground only; Wick and the props stand in front of it and stay readable.
+  float onPage = 1.0 - smoothstep(0.0095, 0.0115, vP.z);
+  float dark = max(s.r * 0.9, ghost * 0.6) * onPage;
   vec3 warm = mix(vec3(1.0), vec3(1.06, 0.93, 0.74), uLit);
   vec3 col = vColor * (0.74 + 0.52 * grain) * lit * warm;
   col = mix(col, vec3(0.055, 0.035, 0.03) * lit, dark);

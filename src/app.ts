@@ -219,7 +219,7 @@ export const startApp = async (container: HTMLElement, emu: EmuDriver | null, pa
       }
     }
     // IWSDK would draw a stand-in hand model; the player's real hands are the show.
-    for (const h of Object.values(world.input.xr.visualAdapters.hand)) h.toggleVisual(false);
+    for (const h of Object.values(world.input.xr.visualAdapters.hand)) { h.toggleVisual(false); if (h.visual) h.visual.model.visible = false; }
 
     emu?.tick(game, paper, dt * speed); // speed only compresses the emulator's clock for slow software-GL test runs
     readHands(frame, ref, dt * speed);

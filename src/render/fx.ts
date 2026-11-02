@@ -17,8 +17,8 @@ export class Fx {
   constructor(mat: Material) {
     for (let i = 0; i < 2; i++) {
       const g = new Group();
-      const white = new Batch().disc(0, 0, 0.012, '#f7e7c4', 0, 14).build(mat);
-      const pupil = new Batch().disc(0, 0, 0.0058, '#1a0f0a', 0, 10).build(mat);
+      const white = new Batch().disc(0, 0, 0.017, '#f7e7c4', 0, 16).build(mat);
+      const pupil = new Batch().disc(0, 0, 0.0085, '#1a0f0a', 0, 12).build(mat);
       pupil.position.z = 0.0005;
       g.add(white, pupil);
       g.visible = false;
@@ -86,8 +86,8 @@ export class Fx {
       const blink = Math.sin(t * 1.3 + i) > 0.985 ? 0.15 : 1;
       e.g.scale.set(1, e.open * blink, 1);
       const dx = w.x - s.ax, dy = w.y - s.ay, d = Math.hypot(dx, dy) || 1;
-      e.pupil.position.x = (dx / d) * 0.0045;
-      e.pupil.position.y = (dy / d) * 0.0045;
+      e.pupil.position.x = (dx / d) * 0.0065;
+      e.pupil.position.y = (dy / d) * 0.0065;
     });
     for (const r of this.rings) {
       if (!r.on) { r.m.visible = false; continue; }

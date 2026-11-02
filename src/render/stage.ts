@@ -68,7 +68,8 @@ export class Stage {
     const pal = PALETTES[index % PALETTES.length];
     const b = new Batch();
     // The sheet, then sky glow and two ranges of hills, each its own thin layer of paper.
-    b.poly(P(LEFT, BOTTOM, RIGHT, BOTTOM, RIGHT, TOP, LEFT, TOP), pal.sky, 0);
+    // Runs under the frame: the frame sits nearer the eye, so an exact fit would show a sliver of room.
+    b.poly(P(LEFT - 0.018, BOTTOM - 0.018, RIGHT + 0.018, BOTTOM - 0.018, RIGHT + 0.018, TOP + 0.018, LEFT - 0.018, TOP + 0.018), pal.sky, 0);
     b.disc(0.13 + (index % 3) * 0.06, 0.095 - (index % 2) * 0.03, 0.064, pal.glow, 0.0006, 28);
     b.poly(ridge(LEFT, RIGHT, -0.015 + rnd() * 0.02, 0.028, BOTTOM, index * 1.7), pal.far, 0.0012);
     b.poly(ridge(LEFT, RIGHT, -0.05, 0.022, BOTTOM, index * 2.9 + 1), pal.mid, 0.0018);
