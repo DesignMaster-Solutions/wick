@@ -1,0 +1,30 @@
+{
+  "name": "wick",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "WICK: your hands cast the only road he has. A hands-first WebXR shadow-puppet game.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@iwsdk/core": "1.1.0-rc.2",
+    "iwer": "2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "gl-matrix": "^3.4.4",
+    "typescript": "^5.8.0",
+    "vite": "^7.0.0"
+  },
+  "overrides": {
+    "playwright": "npm:empty-npm-package@1.0.0"
+  }
+}
