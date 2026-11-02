@@ -3,7 +3,7 @@
 import { BONES, PALM_LINKS, type Hand, type Vec3 } from './hand.ts';
 
 export const STRIDE = 7; // ax ay bx by radius penumbra magnification
-export const MAX_CAPSULES = 2 * (BONES.length + PALM_LINKS.length) + 40;
+export const MAX_CAPSULES = 2 * (BONES.length + PALM_LINKS.length) + 40; // two hands + snail trail
 export const LIGHT_RADIUS = 0.011;
 export const MAX_SOLID_MAG = 3.6; // beyond this the shadow is too diffuse to stand on
 const PALM_RADIUS_BOOST = 1.5;

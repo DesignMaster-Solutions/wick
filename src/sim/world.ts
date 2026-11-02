@@ -100,7 +100,8 @@ const puppetActs = (w: World, dt: number) => {
     }
     const carries = s.awake === 'bird' || s.awake === 'swan';
     // Only chasms: a bird that flew him past everything would make the other puppets pointless.
-    if (carries && w.why === 'chasm' && w.mode !== 'carried' && w.mode !== 'drift' && w.regrab === 0 && Math.hypot(s.ax - w.x, s.ay - (w.y + WICK_H)) < CARRY_REACH) {
+    const lip = nextObstacle(w);
+    if (carries && lip?.kind === 'chasm' && w.x > lip.x0 - 0.05 && w.mode !== 'carried' && w.mode !== 'drift' && w.regrab === 0 && Math.hypot(s.ax - w.x, s.ay - (w.y + WICK_H)) < CARRY_REACH) {
       w.mode = 'carried';
       w.carrierHand = i;
       w.events.push({ t: 'grab', x: w.x, y: w.y, who: s.awake });
@@ -108,7 +109,7 @@ const puppetActs = (w: World, dt: number) => {
   });
 };
 
-const canStandAhead = (w: World, front: number): Why => {
+export const canStandAhead = (w: World, front: number): Why => {
   if (terrainWall(w, front, w.y) || shadowOverlaps(w.shadow, front, w.y + STEP_UP, w.y + WICK_H)) return 'wall';
   const g = groundAt(w, front, w.y);
   return g === null || g < w.y - STEP_DOWN ? 'gap' : null;
@@ -122,7 +123,7 @@ const moveWick = (w: World, dt: number) => {
     const ob = w.page.obstacles.find((o) => o.kind === 'chasm' && !w.cleared.has(o.i));
     if (ob && w.x > ob.x1 + 0.025) clear(w, ob, 'chasm-crossed');
     const g = groundAt(w, w.x, w.y);
-    if (!s.awake || (w.x > w.checkX + 0.05 && g !== null && w.y - g < 0.05 && !w.page.obstacles.some((o) => o.kind === 'chasm' && o.x0 < w.x && w.x < o.x1))) {
+    if (!s.awake || (w.cleared.size > 0 && !ob && g !== null && w.y - g < 0.05)) {
       w.mode = 'fall'; w.vy = 0; w.carrierHand = -1; w.regrab = 2.5;
       w.events.push({ t: 'drop', x: w.x, y: w.y });
     }

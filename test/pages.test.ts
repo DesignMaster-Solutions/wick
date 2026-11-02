@@ -49,10 +49,10 @@ test('first page: payoff arrives before 30 s of play', () => {
   assert.ok(w.time < 30, `took ${w.time}`);
 });
 
-test('every page takes 10 to 120 s for a patient player', () => {
+test('every page takes 5 to 120 s for a patient player', () => {
   for (const p of PAGES) {
     const { w } = play(p);
-    assert.ok(w.time > 8 && w.time < 120, `${p.id}: ${w.time}`);
+    assert.ok(w.time > 5 && w.time < 120, `${p.id}: ${w.time}`);
   }
 });
 

@@ -3,7 +3,7 @@
 import { J, newHand, poseHand, quatFromBasis, rotate, type Hand, type Quat, type Vec3 } from './hand.ts';
 import type { Obstacle } from './pages.ts';
 import { addHandShadow, magnification, newShadowSet, STRIDE } from './shadow.ts';
-import { groundAt, STEP_DOWN, STEP_UP, WICK_H, WICK_HALF, type World } from './world.ts';
+import { canStandAhead, groundAt, STEP_UP, WICK_H, WICK_HALF, type World } from './world.ts';
 
 export type HandTarget = { pose: string; wrist: Vec3; q: Quat };
 
@@ -40,10 +40,9 @@ const walkable = (w: World, s: typeof tmpShadow, xa: number, xb: number, y0: num
   const probe = { ...w, shadow: s } as World;
   let y = y0;
   for (let x = xa; x < xb; x += 0.004) {
-    const g = groundAt(probe, x + WICK_HALF, y);
-    if (g === null || g < y - STEP_DOWN) return false;
-    if (g > y + STEP_UP) return false;
-    y = g;
+    probe.y = y - 0.007; // margin: a real hand is never exactly where the plan says
+    if (canStandAhead(probe, x + WICK_HALF)) return false;
+    y = groundAt(probe, x + WICK_HALF, y) ?? y;
   }
   return Math.abs(y - y1) < STEP_UP;
 };
@@ -61,13 +60,13 @@ const planRoad = (w: World, o: Obstacle, handed: 1 | -1): HandTarget | null => {
           const q = handQuat(lean, s);
           const c: HandTarget = { pose: 'flat', wrist: [w.light[0], w.light[1], z], q };
           const b0 = bounds(shadowOf(w, c, handed));
-          const targetMid = span > 0 ? midX : o.x0 - 0.05;
-          const dx = (targetMid - (b0.minX + b0.maxX) / 2) / t;
+          // A bridge centres over the gap; a ramp ends with its fingertips against the wall.
+          const dx = (span > 0 ? midX - (b0.minX + b0.maxX) / 2 : o.x0 + 0.012 - b0.maxX) / t;
           // Lift so the top edge of the shadow meets the far lip of the obstacle.
           const dy = ((rise > 0 ? o.y1 : o.y0) + fit - b0.maxY) / t;
           c.wrist = [c.wrist[0] + dx, c.wrist[1] + dy, z];
           const sh = shadowOf(w, c, handed);
-          if (walkable(w, sh, o.x0 - 0.05, o.x1 + 0.05, o.y0, o.y1)) return c;
+          if (walkable(w, sh, o.x0 - (span > 0 ? 0.05 : 0.22), o.x1 + 0.05, o.y0, o.y1)) return c;
         }
       }
     }
@@ -92,6 +91,9 @@ export type BotOptions = { handed?: 1 | -1; chasm?: 'bird' | 'snail'; speed?: nu
 export class Bot {
   roads = new Map<number, HandTarget | null>();
   cur: Vec3 | null = null;
+  pose: string | null = null;
+  goal: Vec3 | null = null;
+  away = 0;
   out: Hand = newHand();
   handed: 1 | -1;
   opt: BotOptions;
@@ -103,6 +105,7 @@ export class Bot {
   /** The hand a player should be making right now, or null if nothing is in Wick's way. */
   intent(w: World): HandTarget | null {
     const o = w.page.obstacles.find((p) => !w.cleared.has(p.i) && p.x1 + WICK_HALF >= w.x);
+    if (o && o.kind === 'rain' && w.y > o.y0 + 0.02) return null; // he climbed the umbrella: let him down
     if (w.mode === 'carried') {
       const c = w.page.obstacles.find((p) => p.kind === 'chasm' && p.x1 > w.x - 0.08);
       const pose = w.hands[w.carrierHand]?.awake ?? 'bird';
@@ -111,6 +114,7 @@ export class Bot {
       return placeAnchor(w, pose, Math.min(w.x + 0.05, dest), destY, 0.16, 0.5, this.handed);
     }
     if (!o || w.x < o.x0 - (this.opt.reach ?? 0.16)) return null;
+    if (o.kind === 'chasm' && this.opt.chasm !== 'snail' && w.x < o.x0 - 0.04) return null; // a raised bird would wall him off
     if (o.kind === 'gap' || o.kind === 'wall') {
       if (!this.roads.has(o.i)) this.roads.set(o.i, planRoad(w, o, this.handed));
       return this.roads.get(o.i) ?? null;
@@ -131,7 +135,7 @@ export class Bot {
         const k = Math.min(1, Math.max(0, (w.time % 40) / 8));
         return placeAnchor(w, 'snail', o.x0 - 0.02 + (o.x1 - o.x0 + 0.05) * k, o.y0 - 0.002, 0.14, 0.4, this.handed);
       }
-      return placeAnchor(w, o.pond ? 'swan' : 'bird', w.x, w.y + WICK_H + 0.025, 0.16, 0.5, this.handed);
+      return placeAnchor(w, o.pond ? 'swan' : 'bird', w.x, o.y0 + WICK_H + 0.025, 0.16, 0.5, this.handed);
     }
     return null;
   }
@@ -139,7 +143,12 @@ export class Bot {
   /** The hand as a human would move it: limited speed, no teleporting. */
   update(w: World, dt: number): Hand | null {
     const t = this.intent(w);
-    if (!t) { this.cur = null; return null; }
+    // Changing plan means lifting the hand away, never sweeping its shadow through him.
+    if (t && this.pose && w.mode !== 'carried' && (t.pose !== this.pose || Math.hypot(t.wrist[0] - this.goal![0], t.wrist[1] - this.goal![1]) > 0.08)) { this.pose = null; this.away = 0.5; this.cur = null; }
+    this.away = Math.max(0, this.away - dt);
+    if (!t || this.away > 0) { this.cur = null; this.pose = null; return null; }
+    this.pose = t.pose;
+    this.goal = t.wrist;
     if (!this.cur) this.cur = [...t.wrist] as Vec3;
     const d = Math.hypot(t.wrist[0] - this.cur[0], t.wrist[1] - this.cur[1], t.wrist[2] - this.cur[2]);
     const k = d > 1e-5 ? Math.min(1, ((w.mode === 'carried' ? 0.09 : this.opt.speed ?? 0.5) * dt) / d) : 1;
