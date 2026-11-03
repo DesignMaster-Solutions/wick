@@ -23,7 +23,7 @@ That is the whole game, and it only exists on a headset. Your hand has real dept
 
 Then the old shadow-theatre shapes wake up. Make a dog and it opens an eye and barks the crow away. A bird carries him across the chasm. A rabbit thumps a gate open, a crab cuts the rope, a swan ferries him over the pond, a snail leaves a silver road. Each one you find goes into your album, and after the last page there is a new page every day, seeded by the date.
 
-There are no words anywhere. If he waits too long, the page draws a hatched ghost of a hand that would help. He never dies: he floats down and walks back. Everything works with one hand, there is no timer, a high-contrast ink mode and a steady-hand mode are one poke away, and each page takes a minute or two from a chair.
+There are no words anywhere. If he waits too long, the page draws a hatched ghost of a hand that would help. He never dies: he floats down and walks back. Everything works with one hand, there is no timer, a high-contrast ink mode and a steady-hand mode are one poke away, and each page is a short scene, played seated.
 
 Inspiration: hand-shadow puppetry is one of the oldest screens we have, and it needs what VR hand tracking finally gives us, a real hand with real depth in the same space as the image. We wanted a game you understand in the first ten seconds, because your hands already know how shadows work.
 
@@ -31,9 +31,9 @@ How we built it: Immersive Web SDK and three.js, hosted on GitHub Pages. The 25 
 
 An honest note: we built this without a headset. It is tested in node and in the IWER emulator with synthetic hands, and the video is emulator footage with a stand-in room. Real-device tuning is the next step.
 
-Plans: tune on Quest, more puppets, a shared daily page where you see which shadows others cast, and a two-player mode with one hand each.
+Plans: tune on Quest, more puppets, a shared daily page where you see which shadows others cast, and a two-player mode with one hand each. Target launch: March 2027.
 
-## How the hands were implemented
+## How Hand Interactions are implemented, and what excites us about the future of VR
 Hands are the only input, from the first gesture to the last, with no controller code path at all. `hand-tracking` is a required session feature.
 
 - Reading: every frame we read all 25 joints through XRFrame.getJointPose and smooth them with a One Euro filter, which has a stronger setting for players with tremor.
@@ -42,6 +42,14 @@ Hands are the only input, from the first gesture to the last, with no controller
 - Gestures: a pinch lights the flame. Pinching both hands recentres the page. Poking the tabs on the frame toggles ink mode, steady mode and the album.
 - Puppets: a classifier uses ratios of joint distances, so it is independent of hand size and of which hand you use. It requires a stable pose for 0.3 s. We kept to poses that do not interlace fingers, because occlusion breaks tracking.
 - Everything can be done with one hand; the one two-hand puppet is optional.
+
+What excites us about the future of VR: input that needs no teaching. Everyone already knows what the shadow of their hand does, so WICK has no tutorial and no words, and that only works because the headset reads a real hand with real depth. As tracking gets better at fast and overlapping fingers, the classic puppets that interlace both hands become playable, and with shared spaces two people at one table could cast the same shadow play.
+
+## Target launch date (optional field)
+March 2027 on the Meta Horizon Store, after tuning on Quest 3 and Quest 3S. Until then the web build stays online at https://designmaster-solutions.github.io/wick/ .
+
+## Team members
+Entrant: Design Master Solutions LLC (organization). Representative: Rodolfo Lemos, sales@designmastersolutions.com, role: Representative of the entrant organization (he confirms his details when he submits).
 
 ## YouTube (draft)
 Title: WICK: your hands cast the only road he has (hands-first mixed reality game, Meta Quest / WebXR)
