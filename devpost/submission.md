@@ -51,7 +51,17 @@ March 2027 on the Meta Horizon Store, after tuning on Quest 3 and Quest 3S. Unti
 ## Team members
 Entrant: Design Master Solutions LLC (organization). Representative: Rodolfo Lemos, sales@designmastersolutions.com, role: Representative of the entrant organization (he confirms his details when he submits).
 
+## Image gallery (upload in this order; 01 is the card thumbnail; 3:2, 1620x1080, stills from the public video)
+- devpost/gallery/01.jpg: Rain? Hold your hand over him.
+- devpost/gallery/02.jpg: A wall? Lift him. Your shadow becomes the ramp.
+- devpost/gallery/03.jpg: Make a bird and it carries him over the chasm.
+- devpost/gallery/04.jpg: Every puppet you find goes in the album.
+- devpost/gallery/05.jpg: High-contrast ink mode, and a new page every day.
+- devpost/gallery/06.jpg: Pinch, the flame catches, and your real hand casts the shadow.
+All six are emulator footage (IWER, scripted hands, stand-in room), as the caption in the corner of each still says.
+
 ## YouTube (draft)
+
 Title: WICK: your hands cast the only road he has (hands-first mixed reality game, Meta Quest / WebXR)
 
 Description:
