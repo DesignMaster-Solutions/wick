@@ -33,13 +33,16 @@ An honest note: we built this without a headset. It is tested in node and in the
 
 Plans: tune on Quest, more puppets, a shared daily page where you see which shadows others cast, and a two-player mode with one hand each. Target launch: March 2027.
 
+## What Meta VR capability(ies) did you use in your project?
+Hand tracking (WebXR Hand Input, a required session feature): all 25 joints of each hand are read every frame and they are the only input; there is no controller code path. Passthrough mixed reality (immersive-ar session): the paper, the flame and Wick sit in your real room, and passthrough dims when the candle catches. Spatial anchors: when the browser offers XRFrame.createAnchor, the page is anchored so it stays put through tracking corrections. FoV-aware layout: the page is 72 by 46 cm, 70 cm away and a little below eye level, so with the tabs under it the stage spans about 57° by 41°, inside the field of view of Quest 3S; turn your head more than 58° away and Wick sits down and waits while the sound drops. Clean exit: progress is saved after every page, every new puppet and whenever the session is hidden, so taking the headset off brings you back to the page you were on. Built with the Immersive Web SDK (IWSDK) and three.js for Meta Quest Browser, with procedural Web Audio sound. Tested in node and in the IWER emulator with synthetic hands; it has not yet run on a physical Quest.
+
 ## How Hand Interactions are implemented, and what excites us about the future of VR
 Hands are the only input, from the first gesture to the last, with no controller code path at all. `hand-tracking` is a required session feature.
 
 - Reading: every frame we read all 25 joints through XRFrame.getJointPose and smooth them with a One Euro filter, which has a stronger setting for players with tremor.
 - Shadow: each bone is projected from the flame onto the paper as a capsule, with the palm filled by extra capsules. Rendering and collision share this data.
 - Occlusion: passthrough is behind all virtual content, so the hand capsules are drawn first as depth with near-zero alpha, so real hands appear in front of the paper.
-- Gestures: a pinch lights the flame. Pinching both hands recentres the page. Poking the tabs on the frame toggles ink mode, steady mode and the album.
+- Gestures: a pinch lights the flame. Pinching both hands for over a second recentres the page. Poking the tabs on the frame toggles ink mode, steady mode and the album.
 - Puppets: a classifier uses ratios of joint distances, so it is independent of hand size and of which hand you use. It requires a stable pose for 0.3 s. We kept to poses that do not interlace fingers, because occlusion breaks tracking.
 - Everything can be done with one hand; the one two-hand puppet is optional.
 
